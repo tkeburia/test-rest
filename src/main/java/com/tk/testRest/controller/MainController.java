@@ -15,11 +15,13 @@ import javax.validation.Valid;
 import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.valueOf;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/testRest")
 public class MainController {
-    @GetMapping
+    @RequestMapping(method = GET)
     public ResponseEntity<?> getMe(
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
             HttpServletRequest request
@@ -27,7 +29,7 @@ public class MainController {
         return new ResponseEntity<>(valueOf(giveMe));
     }
 
-    @PostMapping
+    @RequestMapping(method = POST)
     public ResponseEntity<?> postMe(
             @RequestBody HashMap params,
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
@@ -37,7 +39,7 @@ public class MainController {
     }
 
 
-    @PostMapping(value = "validated")
+    @RequestMapping(value = "validated", method = POST)
     public ResponseEntity<?> postMett(
             @RequestBody @Valid RequestWrapper requestWrapper,
             HttpServletRequest request
@@ -45,7 +47,7 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "slow")
+    @RequestMapping(value = "slow", method = GET)
     public Flux<String> getSlowly() {
         EmitterProcessor<String> stream = EmitterProcessor.create();
         final Flux<String> flux = stream.doOnNext(System.out::println).doOnComplete(() -> System.out.println("done!"));
