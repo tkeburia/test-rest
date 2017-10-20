@@ -1,12 +1,9 @@
 package com.tk.testRest.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.tk.testRest.MyRunnable;
 import com.tk.testRest.dto.RequestWrapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +13,13 @@ import reactor.core.publisher.Flux;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.valueOf;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/testRest")
 public class MainController {
-    @RequestMapping(method = GET)
+    @GetMapping
     public ResponseEntity<?> getMe(
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
             HttpServletRequest request
@@ -34,17 +27,17 @@ public class MainController {
         return new ResponseEntity<>(valueOf(giveMe));
     }
 
-    @RequestMapping(method = POST)
+    @PostMapping
     public ResponseEntity<?> postMe(
             @RequestBody HashMap params,
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
             HttpServletRequest request
     ) throws JsonProcessingException {
-        return new ResponseEntity<>(valueOf(giveMe).getReasonPhrase(), valueOf(giveMe));
+        return new ResponseEntity<>(new JSONObject().put("response", valueOf(giveMe).getReasonPhrase()).toString(), valueOf(giveMe));
     }
 
 
-    @RequestMapping(value = "validated", method = POST)
+    @PostMapping(value = "validated")
     public ResponseEntity<?> postMett(
             @RequestBody @Valid RequestWrapper requestWrapper,
             HttpServletRequest request
