@@ -1,4 +1,4 @@
-package com.tk.testRest.dto;
+package com.tkeburia.testRest.dto;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.tk.testRest.dto;
+package com.tkeburia.testRest.dto;
 
-import com.tk.testRest.annotation.CustomConstraint;
+import com.tkeburia.testRest.annotation.CustomConstraint;
 import lombok.Data;
 
 import java.io.Serializable;

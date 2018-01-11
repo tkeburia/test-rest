@@ -1,6 +1,6 @@
-package com.tk.testRest.annotation;
+package com.tkeburia.testRest.annotation;
 
-import com.tk.testRest.annotation.validator.CustomConstraintValidator;
+import com.tkeburia.testRest.annotation.validator.CustomConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

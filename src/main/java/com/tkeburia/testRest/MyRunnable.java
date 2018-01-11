@@ -1,4 +1,4 @@
-package com.tk.testRest;
+package com.tkeburia.testRest;
 
 public abstract class MyRunnable<T> implements Runnable {
     protected final T t;

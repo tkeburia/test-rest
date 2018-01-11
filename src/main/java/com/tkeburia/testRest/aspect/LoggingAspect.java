@@ -1,9 +1,9 @@
-package com.tk.testRest.aspect;
+package com.tkeburia.testRest.aspect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import com.tk.testRest.dto.HttpRequestAndOtherArgs;
+import com.tkeburia.testRest.dto.HttpRequestAndOtherArgs;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static com.tk.testRest.util.Utils.getHeaderMap;
-import static com.tk.testRest.util.Utils.separateHttpRequestArgsFromOthers;
+import static com.tkeburia.testRest.util.Utils.getHeaderMap;
+import static com.tkeburia.testRest.util.Utils.separateHttpRequestArgsFromOthers;
 import static java.util.Collections.singletonList;
 
 @Component

@@ -1,4 +1,4 @@
-package com.tk.testRest.dto;
+package com.tkeburia.testRest.dto;
 
 import lombok.Data;
 

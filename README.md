@@ -4,6 +4,9 @@ A sample rest application that can return different responses based on request p
 # Run with maven
 This is a spring boot application that can be started by running mvn spring-boot:run
 
+# Run as a jar
+The application can be built with maven (`mvn clean install`) and the resulting jar can be run directly: `java -jar testRest-1.0-SNAPSHOT.jar`
+
 # Calling the endpoints
 
 the main endpoints are
@@ -43,10 +46,109 @@ Date: Fri, 20 Oct 2017 15:37:21 GMT
 {"response":"Conflict"}
 ```
 
-### `/testRest/slow` GET endpoint
+### Dynamic response bodies
+If we need the service to return a specific response body (e.g. specific json object), we can include the `responseFile` request parameter in our request.
+This is going to be the name of a file that is managed by the application, the contents of a file are then returned.
 
-This endpoint returns a [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html) That will take a few seconds to finish 
-and will add new values to it in a separate thread after returning the value. This can be used for testing reactive functionality introduced in Spring 5
+Request
+
+`curl -X GET \
+   'http://localhost:23240/testRest?responseFile=new_file1.json' \
+   -H 'Content-Type: application/json -i'
+`
+
+```
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+Content-Length: 582
+Date: Thu, 11 Jan 2018 16:17:26 GMT
+
+{
+    "glossary": {
+        "title": "example glossary",
+        "GlossDiv": {
+            "title": "S",
+            "GlossList": {
+                "GlossEntry": {
+                "ID": "SGML",
+                "SortAs": "SGML",
+                "GlossTerm": "Standard Generalized Markup Language",
+                "Acronym": "SGML",
+                "Abbrev": "ISO 8879:1986",
+                "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                        "GlossSeeAlso": ["GML", "XML"]
+                    },
+                "GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
+```
+
+The above assumes that a json file with name new_file1.json existed in the preconfigured directory.
+
+### Adding new sample response files
+
+The following api call can be used to create new sample response files:
+
+```curl -X POST \
+     'http://localhost:23240/testRest/responseFile?fileName=new_file2.json' \
+     -H 'Content-Type: application/json' \
+     -d '{
+       "glossary": {
+           "title": "example glossary",
+            "GlossDiv": {
+            "title": "S",
+            "GlossList": {
+                   "GlossEntry": {
+                    "ID": "SGML",
+                    "SortAs": "SGML",
+                    "GlossTerm": "Standard Generalized Markup Language",
+                    "Acronym": "SGML",
+                    "Abbrev": "ISO 8879:1986",
+                    "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                        "GlossSeeAlso": ["GML", "XML"]
+                       },
+                    "GlossSee": "markup"
+                   }
+               }
+           }
+       }
+   }'
+   ```
+
+This will create a file with name new_file2.json (per fileName parameter) with the contents of the request body. The location of the file can be
+configured with the `sample.response.directory` property. After this the new file name can be used in above requests to simulate response bodies.
+
+### Listing sample response files
+
+The following lists all currently existing sample response files that can be used in requests:
+
+Request:
+
+`curl -X GET http://localhost:23240/testRest/responseFile -H 'Content-Type: application/json'`
+
+Response:
+
+```HTTP/1.1 200
+   Content-Type: application/json;charset=UTF-8
+   Content-Length: 89
+   Date: Thu, 11 Jan 2018 16:25:15 GMT
+
+   {
+       "files": [
+           "/tmp/sample_responses/new_file1.json",
+           "/tmp/sample_responses/new_file2.json"
+       ]
+   }
+```
+
+## Swagger Docs
+
+The above endpoints are described using swagger and can be accessed on `http://localhost:23240/swagger-ui.html`
 
 # Logging
 

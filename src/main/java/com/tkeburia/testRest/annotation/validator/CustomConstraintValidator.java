@@ -1,7 +1,7 @@
-package com.tk.testRest.annotation.validator;
+package com.tkeburia.testRest.annotation.validator;
 
-import com.tk.testRest.annotation.CustomConstraint;
-import com.tk.testRest.dto.EnumActionValues;
+import com.tkeburia.testRest.annotation.CustomConstraint;
+import com.tkeburia.testRest.dto.EnumActionValues;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
