@@ -156,16 +156,17 @@ The application will log full requests including request parameters and headers 
 
 Request
 
-```curl -X POST \
-   >   'http://localhost:23240/testRest?giveMe=201' \
-   >   -H 'authorization: Basic dXNlcjpwd2Q=' \
-   >   -H 'content-type: application/json' \
-   >   -d '{
-   >     "param1" : "value",
-   >     "param2" : 1,
-   >     "param3" : true
-   > }' -i
-   ```
+```
+      curl -X POST \
+      'http://localhost:23240/testRest?giveMe=201' \
+      -H 'authorization: Basic dXNlcjpwd2Q=' \
+      -H 'content-type: application/json' \
+      -d '{
+        "param1" : "value",
+        "param2" : 1,
+        "param3" : true
+    }' -i
+ ```
 
 Response
 
