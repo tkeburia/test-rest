@@ -1,6 +1,5 @@
 package com.tkeburia.testRest.controller;
 
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +61,8 @@ public class ResponseFileController {
     }
 
     private void writeFile(String fileName, byte[] fileContent) throws IOException {
+        final File dir = new File(responseDir);
+        if (!dir.exists()) dir.mkdir();
         final FileOutputStream fileOutputStream = new FileOutputStream(responseDir + fileName);
         fileOutputStream.write(fileContent);
         fileOutputStream.close();

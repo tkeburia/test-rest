@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static com.tkeburia.testRest.util.Utils.getHeaderMap;
-import static com.tkeburia.testRest.util.Utils.separateHttpRequestArgsFromOthers;
+import static com.tkeburia.testRest.util.HttpUtils.getHeaderMap;
+import static com.tkeburia.testRest.util.HttpUtils.separateHttpRequestArgsFromOthers;
 import static java.util.Collections.singletonList;
 
 @Component
