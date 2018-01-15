@@ -1,20 +1,17 @@
 package com.tkeburia.testRest.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tkeburia.testRest.MyRunnable;
-import com.tkeburia.testRest.dto.RequestWrapper;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.EmitterProcessor;
-import reactor.core.publisher.Flux;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,42 +62,6 @@ public class MainController {
             @RequestParam(required = false) String responseFile
     ) throws IOException {
         return new ResponseEntity<>(getResponseMessage(giveMe, responseFile), valueOf(giveMe));
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @RequestMapping(value = "validated", method = POST)
-    public ResponseEntity<?> postMett(
-            @RequestBody @Valid RequestWrapper requestWrapper,
-            HttpServletRequest request
-    ) throws JsonProcessingException {
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @RequestMapping(value = "slow", method = GET)
-    public Flux<String> getSlowly() {
-        EmitterProcessor<String> stream = EmitterProcessor.create();
-        final Flux<String> flux = stream.doOnNext(System.out::println).doOnComplete(() -> System.out.println("done!"));
-
-        new Thread(getRunnable(stream)).start();
-
-        return flux;
-    }
-
-    private Runnable getRunnable(final EmitterProcessor<String> stream) {
-        return new MyRunnable<EmitterProcessor<String>>(stream) {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    try {
-                        if (i % 3 == 0) Thread.sleep(1000);
-                    }
-                    catch (InterruptedException ignored) { }
-                    t.onNext("------ " + i);
-                }
-                t.onComplete();
-            }
-        };
     }
 
     private String getResponseMessage(Integer giveMe, String responseFile) throws IOException {
