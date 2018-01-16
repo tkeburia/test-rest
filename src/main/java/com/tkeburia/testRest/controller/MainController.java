@@ -2,7 +2,6 @@ package com.tkeburia.testRest.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,6 @@ public class MainController {
         this.responseDir = responseDir;
     }
 
-
     @ApiOperation(
             value = "Test a GET request",
             httpMethod = "GET",
@@ -48,7 +46,6 @@ public class MainController {
         return new ResponseEntity<>(getFileAsString(responseFile), valueOf(giveMe));
     }
 
-    @ApiParam()
     @ApiOperation(
             value = "Test a POST request",
             httpMethod = "POST",
@@ -78,7 +75,9 @@ public class MainController {
         if (fileName == null) return "";
         File file =  new File(responseDir + fileName);
         byte[] bytes = new byte[(int) file.length()];
-        new FileInputStream(file).read(bytes);
+        final FileInputStream fileInputStream = new FileInputStream(file);
+        fileInputStream.read(bytes);
+        fileInputStream.close();
         return new String(bytes);
     }
 }

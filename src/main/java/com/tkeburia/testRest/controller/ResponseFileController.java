@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -50,7 +51,7 @@ public class ResponseFileController {
     @RequestMapping(method = POST)
     public ResponseEntity<?> postResponseFile(@RequestParam String fileName, @RequestBody byte[] fileContent) throws IOException {
         writeFile(fileName, fileContent);
-        return new ResponseEntity<>(OK);
+        return new ResponseEntity<>(CREATED);
     }
 
     private List<File> getFileList() {
