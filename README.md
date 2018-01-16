@@ -25,7 +25,7 @@ Response
  Content-Length: 0
  Date: Fri, 20 Oct 2017 15:33:52 GMT
  Connection: close
- ```
+```
 
 ### `/testRest` POST endpoint
 if called without any query parameters will return a 200. It will also return a json with
@@ -93,7 +93,8 @@ The above assumes that a json file with name new_file1.json existed in the preco
 
 The following api call can be used to create new sample response files:
 
-```curl -X POST \
+```
+curl -X POST \
      'http://localhost:23240/testRest/responseFile?fileName=new_file2.json' \
      -H 'Content-Type: application/json' \
      -d '{
@@ -118,7 +119,7 @@ The following api call can be used to create new sample response files:
            }
        }
    }'
-   ```
+```
 
 This will create a file with name new_file2.json (per fileName parameter) with the contents of the request body. The location of the file can be
 configured with the `sample.response.directory` property. After this the new file name can be used in above requests to simulate response bodies.
@@ -133,7 +134,8 @@ Request:
 
 Response:
 
-```HTTP/1.1 200
+```
+   HTTP/1.1 200
    Content-Type: application/json;charset=UTF-8
    Content-Length: 89
    Date: Thu, 11 Jan 2018 16:25:15 GMT
