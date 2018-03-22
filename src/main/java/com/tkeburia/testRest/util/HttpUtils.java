@@ -13,8 +13,12 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.list;
 import static java.util.stream.Collectors.toMap;
 
-public class HttpUtils {
+public final class HttpUtils {
     private static final String AUTHORIZATION_HEADER_NAME = "authorization";
+
+    private HttpUtils() {
+
+    }
 
     public static Map<String, String> getHeaderMap(HttpServletRequest request, List<String> suppressedHeaders) {
         if (request == null) return null;

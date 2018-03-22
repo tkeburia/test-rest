@@ -1,8 +1,12 @@
 package com.tkeburia.testRest.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tkeburia.testRest.util.SchemaUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,24 +16,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.tkeburia.testRest.util.SchemaUtils.validateAgainstSchema;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.springframework.http.HttpStatus.valueOf;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/testRest")
 @Api(value="testRest", description="Test operations that return values based on the provided request parameters or body")
 public class MainController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
+
+
     private final String responseDir;
+    private final String schemaDir;
+    private final ObjectMapper om;
+
 
     @Autowired
-    public MainController(@Value("${sample.response.directory}") String responseDir) {
+    public MainController(
+            @Value("${sample.response.directory}") String responseDir,
+            @Value("${schema.file.directory}") String schemaDir,
+            ObjectMapper om
+    ) {
         this.responseDir = responseDir;
+        this.schemaDir = schemaDir;
+        this.om = om;
     }
 
     @ApiOperation(
@@ -56,30 +73,30 @@ public class MainController {
     public ResponseEntity<?> postMe(
             @RequestBody HashMap params,
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
-            @RequestParam(required = false) String responseFile
+            @RequestParam(required = false) String responseFile,
+            @RequestParam(required = false) String schemaFile
     ) throws IOException {
+
+        validateAgainstSchema(om.writeValueAsString(params), schemaDir, schemaFile);
         return new ResponseEntity<>(getResponseMessage(giveMe, responseFile), valueOf(giveMe));
     }
 
-    private String getResponseMessage(Integer giveMe, String responseFile) throws IOException {
-        String message;
-        if (responseFile == null) {
-            message = new JSONObject().put("response", valueOf(giveMe).getReasonPhrase()).toString();
-        } else {
-            message = getFileAsString(responseFile);
+    private String getResponseMessage(Integer giveMe, String responseFile) {
+        final String altResponse = new JSONObject().put("response", valueOf(giveMe).getReasonPhrase()).toString();
+        if (responseFile == null) return altResponse;
+        try {
+            return getFileAsString(responseFile);
         }
-        return message;
+        catch (IOException e) {
+            LOG.error("Error getting altResponse message : {}", e);
+        }
+        return altResponse;
     }
 
     private String getFileAsString(String fileName) throws IOException {
         if (fileName == null) return "";
-        File file =  new File(responseDir + fileName);
-        byte[] bytes = new byte[(int) file.length()];
-        final FileInputStream fileInputStream = new FileInputStream(file);
-        fileInputStream.read(bytes);
-        fileInputStream.close();
-        return new String(bytes);
+        return readFileToString(new File(responseDir, fileName), UTF_8);
     }
-}
 
+}
 

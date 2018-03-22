@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.tkeburia.testRest.util.SchemaUtils.writeBytesToFile;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -50,7 +50,18 @@ public class ResponseFileController {
                     "`MainController` methods if their name is provided in the request")
     @RequestMapping(method = POST)
     public ResponseEntity<?> postResponseFile(@RequestParam String fileName, @RequestBody byte[] fileContent) throws IOException {
-        writeFile(fileName, fileContent);
+        writeBytesToFile(responseDir + fileName, fileContent);
+        return new ResponseEntity<>(CREATED);
+    }
+
+    @ApiOperation(
+            value = "POST a new schema file",
+            httpMethod = "POST",
+            notes = "This operation creates a schema file in the configured directory (`schema.file.directory`) that can be used by" +
+                    "`MainController` methods to validate posted data")
+    @RequestMapping(value = "/schema", method = POST)
+    public ResponseEntity<?> postSchemaFile(@RequestParam String fileName, @RequestBody byte[] fileContent) throws IOException {
+        writeBytesToFile(fileName, fileContent);
         return new ResponseEntity<>(CREATED);
     }
 
@@ -59,13 +70,5 @@ public class ResponseFileController {
         if (!dir.exists()) new File(responseDir).mkdir();
         final File[] responseFileDir = dir.listFiles();
         return Stream.of(responseFileDir).filter(File::isFile).collect(Collectors.toList());
-    }
-
-    private void writeFile(String fileName, byte[] fileContent) throws IOException {
-        final File dir = new File(responseDir);
-        if (!dir.exists()) dir.mkdir();
-        final FileOutputStream fileOutputStream = new FileOutputStream(responseDir + fileName);
-        fileOutputStream.write(fileContent);
-        fileOutputStream.close();
     }
 }
