@@ -1,6 +1,7 @@
 package com.tkeburia.testRest.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,36 +21,33 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/testRest/responseFile")
-public class ResponseFileController {
+@RequestMapping("/testRest/schemaFile")
+public class SchemaFileController {
 
-    private final String responseDir;
+    private final String schemaDir;
 
     @Autowired
-    public ResponseFileController(@Value("${sample.response.directory}") String responseDir) {
-        this.responseDir = responseDir;
+    public SchemaFileController(@Value("${schema.file.directory}")String schemaDir) {
+        this.schemaDir = schemaDir;
     }
 
     @ApiOperation(
-            value = "List existing sample response files",
+            value = "List existing schema files",
             httpMethod = "GET",
-            notes = "Lists the currently existing sample response files that the application can return if the file name is provided")
+            notes = "Lists the currently existing schema files that the application can use to validate posted data")
     @RequestMapping(method = GET, produces = "application/json")
     public ResponseEntity<?> getResponseFiles() throws IOException {
-        return new ResponseEntity<Object>(new JSONObject().put("files", getFilesList(responseDir)).toString(), OK);
+        return new ResponseEntity<Object>(new JSONObject().put("files", getFilesList(schemaDir)).toString(), OK);
     }
-
 
     @ApiOperation(
-            value = "POST a new sample response file",
+            value = "POST a new schema file",
             httpMethod = "POST",
-            notes = "This operation creates a file in the configured directory (`sample.response.directory`) that can be returned by" +
-                    "`MainController` methods if their name is provided in the request")
+            notes = "This operation creates a schema file in the configured directory (`schema.file.directory`) that can be used by" +
+                    "`MainController` methods to validate posted data")
     @RequestMapping(method = POST)
-    public ResponseEntity<?> postResponseFile(@RequestParam String fileName, @RequestBody byte[] fileContent) throws IOException {
-        writeBytesToFile(responseDir + fileName, fileContent);
+    public ResponseEntity<?> postSchemaFile(@RequestParam String fileName, @RequestBody byte[] fileContent) throws IOException {
+        writeBytesToFile(schemaDir + fileName, fileContent);
         return new ResponseEntity<>(CREATED);
     }
-
-
 }

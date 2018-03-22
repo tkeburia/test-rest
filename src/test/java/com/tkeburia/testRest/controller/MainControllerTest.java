@@ -1,21 +1,30 @@
 package com.tkeburia.testRest.controller;
 
+import org.everit.json.schema.ValidationException;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.NestedServletException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.writeStringToFile;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,9 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MainController.class)
 @RunWith(SpringRunner.class)
+@TestPropertySource(properties = "schema.file.directory=./src/test/resources")
 public class MainControllerTest {
 
     private static final String FILE_NAME = "test_file.json";
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Autowired
     MockMvc testServer;
@@ -37,9 +50,7 @@ public class MainControllerTest {
     public void setup() throws IOException {
         final File dir = new File(responseDir);
         if (!dir.exists()) dir.mkdir();
-        final FileOutputStream fileOutputStream = new FileOutputStream(responseDir + FILE_NAME);
-        fileOutputStream.write("{ \"response\" : \"as_expected\" }".getBytes());
-        fileOutputStream.close();
+        writeStringToFile(new File(dir, FILE_NAME), "{ \"response\" : \"as_expected\" }", UTF_8);
     }
 
     @After
@@ -96,8 +107,8 @@ public class MainControllerTest {
         testServer
                 .perform(
                         post("/testRest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}")
+                                .contentType(APPLICATION_JSON)
+                                .content("{}")
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"response\":\"OK\"}"));
@@ -108,7 +119,7 @@ public class MainControllerTest {
         testServer
                 .perform(
                         post("/testRest?giveMe=400")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
                 .andExpect(status().isBadRequest())
@@ -120,7 +131,7 @@ public class MainControllerTest {
         testServer
                 .perform(
                         post("/testRest?giveMe=503")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
                 .andExpect(status().isServiceUnavailable())
@@ -132,7 +143,7 @@ public class MainControllerTest {
         testServer
                 .perform(
                         post("/testRest?giveMe=201&responseFile=" + FILE_NAME)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
                 .andExpect(status().isCreated())
@@ -144,14 +155,99 @@ public class MainControllerTest {
         testServer
                 .perform(
                         post("/testRest?giveMe=400&responseFile=" + FILE_NAME)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("{ \"response\" : \"as_expected\" }"));
     }
 
+    @Test
+    public void shouldValidatePayloadAgainstSchema() throws Exception {
+        testServer
+                .perform(
+                        post("/testRest?schemaFile=schema.json")
+                                .contentType(APPLICATION_JSON)
+                                .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\"}")
+                )
+                .andExpect(status().isOk());
 
+    }
 
+    @Test
+    public void shouldValidatePayloadWithOptionalPropertiesAgainstSchema() throws Exception {
+        testServer
+                .perform(
+                        post("/testRest?schemaFile=schema.json")
+                                .contentType(APPLICATION_JSON)
+                                .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"age\": 42}")
+                )
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void shouldValidatePayloadWithUnknownProperties() throws Exception {
+        testServer
+                .perform(
+                        post("/testRest?schemaFile=schema.json")
+                                .contentType(APPLICATION_JSON)
+                                .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"spouse\": \"Lois Griffin\"}")
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldFailValidationForIncorrectDataType() throws Exception {
+        exception.expect(nestedValidationExceptionContainingMessage("age: expected type: Number, found: String"));
+
+        testServer
+                .perform(
+                        post("/testRest?schemaFile=schema.json")
+                                .contentType(APPLICATION_JSON)
+                                .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"age\": \"42\"}")
+                );
+    }
+
+    @Test
+    public void shouldFailValidationForMissingRequiredField() throws Exception {
+        exception.expect(nestedValidationExceptionContainingMessage("required key [lastName] not found"));
+
+        testServer
+                .perform(
+                        post("/testRest?schemaFile=schema.json")
+                                .contentType(APPLICATION_JSON)
+                                .content("{\"firstName\": \"Peter\"}")
+                );
+    }
+
+    private static Matcher<Throwable> nestedValidationExceptionContainingMessage(String message) {
+        return new NestedExceptionTypeAndMessageMatcher(ValidationException.class, message);
+    }
+
+    private static class NestedExceptionTypeAndMessageMatcher extends TypeSafeMatcher<Throwable> {
+
+        private final Class<? extends Throwable> expectedType;
+        private final String expectedMessage;
+
+        private NestedExceptionTypeAndMessageMatcher(Class<? extends Throwable> expectedType, String expectedMessage) {
+            this.expectedType = expectedType;
+            this.expectedMessage = expectedMessage;
+        }
+
+        @Override
+        protected boolean matchesSafely(Throwable item) {
+            if (!NestedServletException.class.isAssignableFrom(item.getClass())) return false;
+            final Throwable cause = item.getCause();
+            return expectedType.isAssignableFrom(cause.getClass()) && cause.getMessage().contains(expectedMessage);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText(String
+                    .format("NestedServletException with a cause of type %s and message [%s]", expectedType
+                            .getName(), expectedMessage));
+        }
+    }
 
 }

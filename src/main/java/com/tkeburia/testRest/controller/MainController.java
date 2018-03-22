@@ -1,6 +1,7 @@
 package com.tkeburia.testRest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tkeburia.testRest.util.FileUtils;
 import com.tkeburia.testRest.util.SchemaUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.tkeburia.testRest.util.FileUtils.getFileAsString;
 import static com.tkeburia.testRest.util.SchemaUtils.validateAgainstSchema;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.FileUtils.readFileToString;
@@ -60,7 +62,7 @@ public class MainController {
             @RequestParam(required = false, defaultValue = "200") Integer giveMe,
             @RequestParam(required = false) String responseFile
     ) throws IOException {
-        return new ResponseEntity<>(getFileAsString(responseFile), valueOf(giveMe));
+        return new ResponseEntity<>(getFileAsString(responseDir, responseFile), valueOf(giveMe));
     }
 
     @ApiOperation(
@@ -85,17 +87,12 @@ public class MainController {
         final String altResponse = new JSONObject().put("response", valueOf(giveMe).getReasonPhrase()).toString();
         if (responseFile == null) return altResponse;
         try {
-            return getFileAsString(responseFile);
+            return getFileAsString(responseDir, responseFile);
         }
         catch (IOException e) {
             LOG.error("Error getting altResponse message : {}", e);
         }
         return altResponse;
-    }
-
-    private String getFileAsString(String fileName) throws IOException {
-        if (fileName == null) return "";
-        return readFileToString(new File(responseDir, fileName), UTF_8);
     }
 
 }
