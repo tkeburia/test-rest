@@ -1,8 +1,6 @@
 package com.tkeburia.testRest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tkeburia.testRest.util.FileUtils;
-import com.tkeburia.testRest.util.SchemaUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
@@ -16,20 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
 import static com.tkeburia.testRest.util.FileUtils.getFileAsString;
 import static com.tkeburia.testRest.util.SchemaUtils.validateAgainstSchema;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.springframework.http.HttpStatus.valueOf;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/testRest")
-@Api(value="testRest", description="Test operations that return values based on the provided request parameters or body")
+@Api(value="testRest", description="Operations that return values based on the provided request parameters or body")
 public class MainController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
