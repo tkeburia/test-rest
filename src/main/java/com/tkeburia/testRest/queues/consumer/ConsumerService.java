@@ -1,5 +1,7 @@
 package com.tkeburia.testRest.queues.consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 @Service
 public class ConsumerService {
+    private static final Logger LOG = LoggerFactory.getLogger(ConsumerService.class);
 
     private final MessageListener messageListener;
     private final Map<String, Connection> consumerConnectionMap;
@@ -39,7 +42,7 @@ public class ConsumerService {
             }
         }
         catch (JMSException e) {
-            e.printStackTrace();
+            LOG.error("Queue consumer error : ", e);
         }
     }
 }

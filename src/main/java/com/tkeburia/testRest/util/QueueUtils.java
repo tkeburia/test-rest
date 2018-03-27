@@ -7,7 +7,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.ConnectionFactory;
 import java.util.Set;
 
-import static com.tkeburia.testRest.constants.Constants.QUEUE_PRODUCER;
+import static com.tkeburia.testRest.constants.Constants.BROKER_PRODUCER;
 import static java.util.stream.Collectors.toSet;
 
 public final class QueueUtils {
@@ -29,10 +29,10 @@ public final class QueueUtils {
 
     private static String buildMissingPropertyExceptionMessage(Set<String> queueNames, Set<String> uris, Set<String> userNames, Set<String> passwords) {
 
-        final Set<String> forQueueNames = queueNames.stream().map(n -> QUEUE_PRODUCER + "queueNames" + n).collect(toSet());
-        final Set<String> forUris = uris.stream().map(n -> QUEUE_PRODUCER + "uris" + n).collect(toSet());
-        final Set<String> forUserNames = userNames.stream().map(n -> QUEUE_PRODUCER + "userNames" + n).collect(toSet());
-        final Set<String> forPasswords = passwords.stream().map(n -> QUEUE_PRODUCER + "passwords" + n).collect(toSet());
+        final Set<String> forQueueNames = queueNames.stream().map(n -> BROKER_PRODUCER + "queueNames" + n).collect(toSet());
+        final Set<String> forUris = uris.stream().map(n -> BROKER_PRODUCER + "uris" + n).collect(toSet());
+        final Set<String> forUserNames = userNames.stream().map(n -> BROKER_PRODUCER + "userNames" + n).collect(toSet());
+        final Set<String> forPasswords = passwords.stream().map(n -> BROKER_PRODUCER + "passwords" + n).collect(toSet());
 
         return String
                 .format("All configured queues should contain complete set of properties, " +

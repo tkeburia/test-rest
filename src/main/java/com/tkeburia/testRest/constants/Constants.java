@@ -5,6 +5,6 @@ public final class Constants {
     private Constants() {
     }
 
-    public static final String QUEUE_PRODUCER = "queue.producer";
-    public static final String QUEUE_CONSUMER = "queue.consumer";
+    public static final String BROKER_PRODUCER = "broker.producer";
+    public static final String BROKER_CONSUMER = "broker.consumer";
 }

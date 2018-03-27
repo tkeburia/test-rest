@@ -1,7 +1,9 @@
 package com.tkeburia.testRest.util;
 
+import com.tkeburia.testRest.exception.DetailedValidationException;
 import org.apache.commons.io.FileUtils;
 import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 
@@ -26,7 +28,11 @@ public final class SchemaUtils {
         JSONObject jsonSchema = new JSONObject(FileUtils.readFileToString(schemaFile, UTF_8));
 
         final Schema schema = SchemaLoader.load(jsonSchema);
-        schema.validate(inputObject);
+        try {
+            schema.validate(inputObject);
+        } catch (ValidationException e) {
+            throw new DetailedValidationException(e);
+        }
     }
 
     public static void writeBytesToFile(String filePath, byte[] input) throws IOException {

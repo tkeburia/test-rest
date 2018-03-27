@@ -40,3 +40,4 @@ public class ProducerConfig {
         return template;
     }
 }
+

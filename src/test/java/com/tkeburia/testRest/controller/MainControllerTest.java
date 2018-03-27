@@ -1,5 +1,6 @@
 package com.tkeburia.testRest.controller;
 
+import com.tkeburia.testRest.exception.DetailedValidationException;
 import org.everit.json.schema.ValidationException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -222,7 +223,7 @@ public class MainControllerTest {
     }
 
     private static Matcher<Throwable> nestedValidationExceptionContainingMessage(String message) {
-        return new NestedExceptionTypeAndMessageMatcher(ValidationException.class, message);
+        return new NestedExceptionTypeAndMessageMatcher(DetailedValidationException.class, message);
     }
 
     private static class NestedExceptionTypeAndMessageMatcher extends TypeSafeMatcher<Throwable> {

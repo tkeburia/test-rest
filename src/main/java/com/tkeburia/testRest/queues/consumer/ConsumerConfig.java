@@ -2,6 +2,7 @@ package com.tkeburia.testRest.queues.consumer;
 
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,6 +43,12 @@ public class ConsumerConfig {
             result.add(createConsumer(id));
         }
         return result;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "queue.schema.files.names")
+    public Map<String, String> queueSchemaFileMappings() {
+        return new HashMap<>();
     }
 
     private MessageConsumer createConsumer(String queueId) throws JMSException {
