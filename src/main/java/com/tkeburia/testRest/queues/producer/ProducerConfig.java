@@ -1,5 +1,6 @@
 package com.tkeburia.testRest.queues.producer;
 
+import com.tkeburia.testRest.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.tkeburia.testRest.constants.Constants.BROKER_PRODUCER;
 import static com.tkeburia.testRest.util.QueueUtils.buildConnectionFactory;
 import static com.tkeburia.testRest.util.QueueUtils.verifyProperties;
 import static java.util.function.Function.identity;
@@ -26,7 +28,7 @@ public class ProducerConfig {
 
     @Bean
     public Map<String, JmsTemplate> jmsTemplateMap() {
-        verifyProperties(producerProperties);
+        verifyProperties(producerProperties, BROKER_PRODUCER);
         return producerProperties.getIds().stream().collect(Collectors.toMap(identity(), this::templateForQueue));
     }
 

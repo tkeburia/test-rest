@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tkeburia.testRest.constants.Constants.BROKER_CONSUMER;
 import static com.tkeburia.testRest.util.QueueUtils.buildConnectionFactory;
 import static com.tkeburia.testRest.util.QueueUtils.verifyProperties;
 import static javax.jms.Session.AUTO_ACKNOWLEDGE;
@@ -28,7 +29,7 @@ public class ConsumerConfig {
 
     @Bean
     public Map<String, Connection> consumerConnectionMap() throws JMSException {
-        verifyProperties(consumerProperties);
+        verifyProperties(consumerProperties, BROKER_CONSUMER);
         Map<String, Connection> result = new HashMap<>();
         for (String id : consumerProperties.getIds()) {
             result.put(id, createConnection(id));
