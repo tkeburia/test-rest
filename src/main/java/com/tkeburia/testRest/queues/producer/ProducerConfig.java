@@ -1,14 +1,11 @@
 package com.tkeburia.testRest.queues.producer;
 
-import com.tkeburia.testRest.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.tkeburia.testRest.constants.Constants.BROKER_PRODUCER;

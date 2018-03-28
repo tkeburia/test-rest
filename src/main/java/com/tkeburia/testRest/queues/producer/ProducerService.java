@@ -20,10 +20,10 @@ public class ProducerService {
         this.producerProperties = producerProperties;
     }
 
-    public void sendToQueue(String queueId, Object payload) {
-        if (!jmsTemplateMap.keySet().contains(queueId)) {
-            throw new MissingPropertyException(String.format("No configuration found for queue with id '%s'", queueId));
+    public void sendToQueue(String brokerName, Object payload) {
+        if (!jmsTemplateMap.keySet().contains(brokerName)) {
+            throw new MissingPropertyException(String.format("No configuration found for queue with id '%s'", brokerName));
         }
-        jmsTemplateMap.get(queueId).convertAndSend(producerProperties.getQueueNames().get(queueId), payload);
+        jmsTemplateMap.get(brokerName).convertAndSend(producerProperties.getQueueNames().get(brokerName), payload);
     }
 }
