@@ -2,8 +2,6 @@ package com.tkeburia.testRest.queues.producer;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQDestination;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +10,7 @@ import org.springframework.jms.core.JmsTemplate;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProducerConfigTest {
@@ -28,11 +26,10 @@ public class ProducerConfigTest {
     private static final String USER_NAME_2 = "userName2";
     private static final String PASSWORD_2 = "password2";
     private ProducerConfig producerConfig;
-    private ProducerProperties producerProperties;
 
     @Before
     public void setup() {
-        producerProperties = new ProducerProperties();
+        ProducerProperties producerProperties = new ProducerProperties();
         producerProperties.setQueueNames(ImmutableMap.of(BROKER_NAME_1, QUEUE_NAME_1, BROKER_NAME_2, QUEUE_NAME_2));
         producerProperties.setUris(ImmutableMap.of(BROKER_NAME_1, BROKER_URI_1, BROKER_NAME_2, BROKER_URI_2));
         producerProperties.setUserNames(ImmutableMap.of(BROKER_NAME_1, USER_NAME_1, BROKER_NAME_2, USER_NAME_2));

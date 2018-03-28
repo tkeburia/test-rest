@@ -1,7 +1,6 @@
 package com.tkeburia.testRest.controller;
 
 import com.tkeburia.testRest.exception.DetailedValidationException;
-import org.everit.json.schema.ValidationException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
