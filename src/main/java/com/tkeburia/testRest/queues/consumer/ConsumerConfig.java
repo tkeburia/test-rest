@@ -21,10 +21,12 @@ import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 public class ConsumerConfig {
 
     private final ConsumerProperties consumerProperties;
+    private final PooledConnectionFactory pooledConnectionFactory;
 
     @Autowired
-    public ConsumerConfig(ConsumerProperties consumerProperties) {
+    public ConsumerConfig(ConsumerProperties consumerProperties, PooledConnectionFactory pooledConnectionFactory) {
         this.consumerProperties = consumerProperties;
+        this.pooledConnectionFactory = pooledConnectionFactory;
     }
 
     @Bean
@@ -59,11 +61,10 @@ public class ConsumerConfig {
     }
 
     private Connection createConnection(String queueId) throws JMSException {
-        final PooledConnectionFactory pooledConnectionFactoryConsumer = new PooledConnectionFactory();
         String uri = consumerProperties.getUris().get(queueId);
         String userName = consumerProperties.getUserNames().get(queueId);
         String password = consumerProperties.getPasswords().get(queueId);
-        pooledConnectionFactoryConsumer.setConnectionFactory(buildConnectionFactory(uri, userName, password));
-        return pooledConnectionFactoryConsumer.createConnection();
+        pooledConnectionFactory.setConnectionFactory(buildConnectionFactory(uri, userName, password));
+        return pooledConnectionFactory.createConnection();
     }
 }

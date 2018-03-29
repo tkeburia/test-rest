@@ -2,6 +2,7 @@ package com.tkeburia.testRest.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -21,6 +22,11 @@ public class AppConfig {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         return mapper;
+    }
+
+    @Bean
+    public PooledConnectionFactory pooledConnectionFactory() {
+        return new PooledConnectionFactory();
     }
 
     @Bean

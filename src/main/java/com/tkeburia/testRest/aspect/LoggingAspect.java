@@ -69,7 +69,7 @@ public class LoggingAspect
             argNames = "message"
 
     )
-    public void dow(Message message) throws JMSException, JsonProcessingException {
+    public void logMethodData(Message message) throws JMSException, JsonProcessingException {
         LOG.info(String.format("Received message on queue %s", message.getJMSDestination().toString()));
         LOG.info("Queue Message content : {}", message.toString());
     }
