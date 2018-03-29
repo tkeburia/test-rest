@@ -20,7 +20,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/testRest/responseFile")
+@RequestMapping("/test-rest/responseFile")
 public class ResponseFileController {
 
     private final String responseDir;

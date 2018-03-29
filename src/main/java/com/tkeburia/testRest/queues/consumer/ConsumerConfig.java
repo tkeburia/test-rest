@@ -2,6 +2,7 @@ package com.tkeburia.testRest.queues.consumer;
 
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class ConsumerConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name="activemq.connections.enabled", havingValue="true")
     public Map<String, Connection> consumerConnectionMap() throws JMSException {
         verifyProperties(consumerProperties, BROKER_CONSUMER);
         Map<String, Connection> result = new HashMap<>();
@@ -40,6 +42,7 @@ public class ConsumerConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name="activemq.connections.enabled", havingValue="true")
     public List<MessageConsumer> messageConsumerList() throws JMSException {
         List<MessageConsumer> result = new ArrayList<>();
         for (String id : consumerProperties.getIds()) {
@@ -54,16 +57,16 @@ public class ConsumerConfig {
         return new HashMap<>();
     }
 
-    private MessageConsumer createConsumer(String queueId) throws JMSException {
-        final Session consumerSession = consumerConnectionMap().get(queueId).createSession(false, AUTO_ACKNOWLEDGE);
-        final Destination consumerDestination = consumerSession.createQueue(consumerProperties.getQueueNames().get(queueId));
+    private MessageConsumer createConsumer(String brokerName) throws JMSException {
+        final Session consumerSession = consumerConnectionMap().get(brokerName).createSession(false, AUTO_ACKNOWLEDGE);
+        final Destination consumerDestination = consumerSession.createQueue(consumerProperties.getQueueNames().get(brokerName));
         return consumerSession.createConsumer(consumerDestination);
     }
 
-    private Connection createConnection(String queueId) throws JMSException {
-        String uri = consumerProperties.getUris().get(queueId);
-        String userName = consumerProperties.getUserNames().get(queueId);
-        String password = consumerProperties.getPasswords().get(queueId);
+    private Connection createConnection(String brokerName) throws JMSException {
+        String uri = consumerProperties.getUris().get(brokerName);
+        String userName = consumerProperties.getUserNames().get(brokerName);
+        String password = consumerProperties.getPasswords().get(brokerName);
         pooledConnectionFactory.setConnectionFactory(buildConnectionFactory(uri, userName, password));
         return pooledConnectionFactory.createConnection();
     }

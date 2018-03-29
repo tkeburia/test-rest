@@ -3,6 +3,7 @@ package com.tkeburia.testRest.controller;
 import com.tkeburia.testRest.queues.producer.ProducerService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,8 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/testRest/queues")
+@RequestMapping("/test-rest/queues")
+@ConditionalOnProperty(name="activemq.connections.enabled", havingValue="true")
 public class QueueController {
 
     private final ProducerService producerService;
@@ -32,9 +34,9 @@ public class QueueController {
     @RequestMapping(method = POST)
     public ResponseEntity<?> putMessageToQueue(
             @RequestBody HashMap params,
-            @RequestParam String queueId
+            @RequestParam String brokerName
     ){
-        producerService.sendToQueue(queueId, params);
+        producerService.sendToQueue(brokerName, params);
         return new ResponseEntity<>(OK);
     }
 }

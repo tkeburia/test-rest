@@ -48,7 +48,7 @@ public class ConsumerListener implements MessageListener {
             validateAgainstSchema(messageString, schemaDir, schemaFileName);
         }
         catch (IOException e) {
-            LOG.error("Message did not match the configured schema!", e);
+            LOG.error("Error matching the configured schema!", e);
         }
         catch (JMSException e) {
             LOG.error("Error reading message content: ", e);

@@ -1,6 +1,7 @@
 package com.tkeburia.testRest.queues.producer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
@@ -24,18 +25,19 @@ public class ProducerConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name="activemq.connections.enabled", havingValue="true")
     public Map<String, JmsTemplate> jmsTemplateMap() {
         verifyProperties(producerProperties, BROKER_PRODUCER);
-        return producerProperties.getIds().stream().collect(Collectors.toMap(identity(), this::templateForQueue));
+        return producerProperties.getIds().stream().collect(Collectors.toMap(identity(), this::templateForBroker));
     }
 
-    private JmsTemplate templateForQueue(String queueId) {
+    private JmsTemplate templateForBroker(String brokerName) {
         JmsTemplate template = new JmsTemplate();
-        final String uri = producerProperties.getUris().get(queueId);
-        final String userName = producerProperties.getUserNames().get(queueId);
-        final String password = producerProperties.getPasswords().get(queueId);
+        final String uri = producerProperties.getUris().get(brokerName);
+        final String userName = producerProperties.getUserNames().get(brokerName);
+        final String password = producerProperties.getPasswords().get(brokerName);
         template.setConnectionFactory(buildConnectionFactory(uri, userName, password));
-        template.setDefaultDestinationName(producerProperties.getQueueNames().get(queueId));
+        template.setDefaultDestinationName(producerProperties.getQueueNames().get(brokerName));
         return template;
     }
 }

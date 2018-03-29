@@ -160,6 +160,13 @@
             <version>4.2.6.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
     <build>
@@ -213,7 +220,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.50</minimum>
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -230,6 +237,7 @@
                     <repository>${docker.image.prefix}/${docker.image.name}</repository>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                        <CONFIG_LOCATION>/opt/test-rest/config/</CONFIG_LOCATION>
                     </buildArgs>
                     <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                     <tag>latest</tag>

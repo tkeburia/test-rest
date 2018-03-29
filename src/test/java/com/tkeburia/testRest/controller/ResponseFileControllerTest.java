@@ -47,7 +47,7 @@ public class ResponseFileControllerTest {
         new File(responseDir).mkdir();
 
         testServer.perform(
-                post("/testRest/responseFile?fileName=" + FILE_NAME)
+                post("/test-rest/responseFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
@@ -59,7 +59,7 @@ public class ResponseFileControllerTest {
     @Test
     public void shouldCreateNewFileWhenResponseDirDoesntExist() throws Exception {
         testServer.perform(
-                post("/testRest/responseFile?fileName=" + FILE_NAME)
+                post("/test-rest/responseFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
@@ -73,18 +73,18 @@ public class ResponseFileControllerTest {
     public void shouldListTwoExistingFiles() throws Exception {
 
         testServer.perform(
-                post("/testRest/responseFile?fileName=" + FILE_NAME)
+                post("/test-rest/responseFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
 
         testServer.perform(
-                post("/testRest/responseFile?fileName=" + FILE_NAME2)
+                post("/test-rest/responseFile?fileName=" + FILE_NAME2)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
 
-        testServer.perform(get("/testRest/responseFile"))
+        testServer.perform(get("/test-rest/responseFile"))
                   .andExpect(status().isOk())
                     .andExpect(content().string("{\"files\":[\"" + responseDir + FILE_NAME + "\",\"" + responseDir + FILE_NAME2 + "\"]}"));
     }

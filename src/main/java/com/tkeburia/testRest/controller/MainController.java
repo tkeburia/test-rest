@@ -24,8 +24,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/testRest")
-@Api(value="testRest", description="Operations that return values based on the provided request parameters or body")
+@RequestMapping("/test-rest")
+@Api(value="test-rest", description="Operations that return values based on the provided request parameters or body")
 public class MainController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);

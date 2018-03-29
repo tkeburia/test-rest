@@ -3,12 +3,14 @@ package com.tkeburia.testRest.queues.producer;
 import com.tkeburia.testRest.exception.MissingPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
+@ConditionalOnProperty(name="activemq.connections.enabled", havingValue="true")
 public class ProducerService {
 
     private final Map<String, JmsTemplate> jmsTemplateMap;

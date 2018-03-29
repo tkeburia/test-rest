@@ -65,7 +65,7 @@ public class MainControllerTest {
     @Test
     public void shouldReturn200AndEmptyBodyOnGetByDefault() throws Exception {
         testServer
-                .perform(get("/testRest"))
+                .perform(get("/test-rest"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
     }
@@ -73,7 +73,7 @@ public class MainControllerTest {
     @Test
     public void shouldReturn400AndEmptyBodyOnGetWhenGiveMeValueProvided() throws Exception {
         testServer
-                .perform(get("/testRest?giveMe=400"))
+                .perform(get("/test-rest?giveMe=400"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(""));
     }
@@ -81,7 +81,7 @@ public class MainControllerTest {
     @Test
     public void shouldReturn503AndEmptyBodyOnGetWhenGiveMeValueProvided() throws Exception {
         testServer
-                .perform(get("/testRest?giveMe=503"))
+                .perform(get("/test-rest?giveMe=503"))
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(content().string(""));
     }
@@ -89,7 +89,7 @@ public class MainControllerTest {
     @Test
     public void shouldReturn201AndExpectedBodyOnGetWhenGiveMeAndResponseFileGiven() throws Exception {
         testServer
-                .perform(get("/testRest?giveMe=201&responseFile=" + FILE_NAME))
+                .perform(get("/test-rest?giveMe=201&responseFile=" + FILE_NAME))
                 .andExpect(status().isCreated())
                 .andExpect(content().string("{ \"response\" : \"as_expected\" }"));
     }
@@ -97,7 +97,7 @@ public class MainControllerTest {
     @Test
     public void shouldReturn400AndExpectedBodyOnGetWhenGiveMeAndResponseFileGiven() throws Exception {
         testServer
-                .perform(get("/testRest?giveMe=400&responseFile=" + FILE_NAME))
+                .perform(get("/test-rest?giveMe=400&responseFile=" + FILE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("{ \"response\" : \"as_expected\" }"));
     }
@@ -106,7 +106,7 @@ public class MainControllerTest {
     public void shouldReturn200AndEmptyBodyOnPostByDefault() throws Exception {
         testServer
                 .perform(
-                        post("/testRest")
+                        post("/test-rest")
                                 .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
@@ -118,7 +118,7 @@ public class MainControllerTest {
     public void shouldReturn400AndEmptyBodyOnPostWhenGiveMeValueProvided() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?giveMe=400")
+                        post("/test-rest?giveMe=400")
                                 .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
@@ -130,7 +130,7 @@ public class MainControllerTest {
     public void shouldReturn503AndEmptyBodyOnPostWhenGiveMeValueProvided() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?giveMe=503")
+                        post("/test-rest?giveMe=503")
                                 .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
@@ -142,7 +142,7 @@ public class MainControllerTest {
     public void shouldReturn201AndExpectedBodyOnPostWhenGiveMeAndResponseFileGiven() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?giveMe=201&responseFile=" + FILE_NAME)
+                        post("/test-rest?giveMe=201&responseFile=" + FILE_NAME)
                                 .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
@@ -154,7 +154,7 @@ public class MainControllerTest {
     public void shouldReturn400AndExpectedBodyOnPostWhenGiveMeAndResponseFileGiven() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?giveMe=400&responseFile=" + FILE_NAME)
+                        post("/test-rest?giveMe=400&responseFile=" + FILE_NAME)
                                 .contentType(APPLICATION_JSON)
                                 .content("{}")
                 )
@@ -166,7 +166,7 @@ public class MainControllerTest {
     public void shouldValidatePayloadAgainstSchema() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?schemaFile=schema.json")
+                        post("/test-rest?schemaFile=schema.json")
                                 .contentType(APPLICATION_JSON)
                                 .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\"}")
                 )
@@ -178,7 +178,7 @@ public class MainControllerTest {
     public void shouldValidatePayloadWithOptionalPropertiesAgainstSchema() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?schemaFile=schema.json")
+                        post("/test-rest?schemaFile=schema.json")
                                 .contentType(APPLICATION_JSON)
                                 .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"age\": 42}")
                 )
@@ -190,7 +190,7 @@ public class MainControllerTest {
     public void shouldValidatePayloadWithUnknownProperties() throws Exception {
         testServer
                 .perform(
-                        post("/testRest?schemaFile=schema.json")
+                        post("/test-rest?schemaFile=schema.json")
                                 .contentType(APPLICATION_JSON)
                                 .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"spouse\": \"Lois Griffin\"}")
                 )
@@ -203,7 +203,7 @@ public class MainControllerTest {
 
         testServer
                 .perform(
-                        post("/testRest?schemaFile=schema.json")
+                        post("/test-rest?schemaFile=schema.json")
                                 .contentType(APPLICATION_JSON)
                                 .content("{\"firstName\": \"Peter\", \"lastName\": \"Griffin\", \"age\": \"42\"}")
                 );
@@ -215,7 +215,7 @@ public class MainControllerTest {
 
         testServer
                 .perform(
-                        post("/testRest?schemaFile=schema.json")
+                        post("/test-rest?schemaFile=schema.json")
                                 .contentType(APPLICATION_JSON)
                                 .content("{\"firstName\": \"Peter\"}")
                 );

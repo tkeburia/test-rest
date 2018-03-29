@@ -21,7 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/testRest/schemaFile")
+@RequestMapping("/test-rest/schemaFile")
 public class SchemaFileController {
 
     private final String schemaDir;

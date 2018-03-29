@@ -46,7 +46,7 @@ public class SchemaFileControllerTest {
         new File(schemaDir).mkdir();
 
         testServer.perform(
-                post("/testRest/schemaFile?fileName=" + FILE_NAME)
+                post("/test-rest/schemaFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
@@ -58,7 +58,7 @@ public class SchemaFileControllerTest {
     @Test
     public void shouldCreateNewFileWhenResponseDirDoesntExist() throws Exception {
         testServer.perform(
-                post("/testRest/schemaFile?fileName=" + FILE_NAME)
+                post("/test-rest/schemaFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
@@ -72,18 +72,18 @@ public class SchemaFileControllerTest {
     public void shouldListTwoExistingFiles() throws Exception {
 
         testServer.perform(
-                post("/testRest/schemaFile?fileName=" + FILE_NAME)
+                post("/test-rest/schemaFile?fileName=" + FILE_NAME)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
 
         testServer.perform(
-                post("/testRest/schemaFile?fileName=" + FILE_NAME2)
+                post("/test-rest/schemaFile?fileName=" + FILE_NAME2)
                         .content("{\"content\" : \"created\"}")
         )
                   .andExpect(status().isCreated());
 
-        testServer.perform(get("/testRest/schemaFile"))
+        testServer.perform(get("/test-rest/schemaFile"))
                   .andExpect(status().isOk())
                   .andExpect(content().string("{\"files\":[\"" + schemaDir + FILE_NAME + "\",\"" + schemaDir + FILE_NAME2 + "\"]}"));
     }

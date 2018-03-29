@@ -5,8 +5,10 @@ import com.tkeburia.testRest.queues.producer.ProducerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(QueueController.class)
 @RunWith(SpringRunner.class)
-@TestPropertySource(properties = "schema.file.directory=./src/test/resources")
+@TestPropertySource(properties = {"schema.file.directory=./src/test/resources", "activemq.connections.enabled=true"})
 public class QueueControllerTest {
 
     @Autowired
@@ -27,11 +29,16 @@ public class QueueControllerTest {
     @MockBean
     ProducerService producerService;
 
+    @Autowired
+    ApplicationContext applicationContext;
+
+    @Value("${activemq.connections.enabled}") Boolean b;
+
     @Test
     public void shouldInvokeProducerServiceWithCorrectArguments() throws Exception {
         testServer
                 .perform(
-                        post("/testRest/queues?queueId=testQueue")
+                        post("/test-rest/queues?brokerName=testQueue")
                         .content("{ \"key\" : \"value\"}")
                         .contentType(APPLICATION_JSON)
                 )
