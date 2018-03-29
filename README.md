@@ -1,5 +1,5 @@
-# testRest
-A sample rest application that can return different responses based on request parameters
+# test-rest
+A simple rest application that can return different responses based on request parameters
 
 # Run with maven
 This is a spring boot application that can be started by running mvn spring-boot:run
@@ -11,7 +11,7 @@ The application can be built with maven (`mvn clean install`) and the resulting 
 
 the main endpoints are
 
-### `/testRest` GET endpoint
+### `/test-rest` GET endpoint
 if called without any query parameters will return a 200 response.
 If a specific response code is necessary it can be supplied as a parameter:
 
@@ -148,7 +148,111 @@ Response:
    }
 ```
 
-## Swagger Docs
+# ActiveMQ support
+I addition to testing rest apis, test-rest provides the ability to test ActiveMQ queues.
+
+### Setting up queue connectivity
+#### Consumers
+To subscribe and consume messages from a queue, you will first need to set the `activemq.connections.enabled` flag to true.
+This will try to read information about queue brokers from the config and will fail the application startup if minimal required
+config is not provided.
+
+Here's an example config to read from a queue
+
+```
+broker.consumer.uris.orderBroker=tcp://localhost:61616
+broker.consumer.userNames.orderBroker=admin
+broker.consumer.passwords.orderBroker=admin
+broker.consumer.queueNames.orderBroker=testQueueInbound
+```
+
+This will subscribe to a queue named testQueueInbound provided by a broker hosted at the given url and credentials.
+After consuming a message, the content of the message will be logged to the std out.
+
+In the above example, the config is for one broker `orderBroker`, but we can subscribe to multiple brokers:
+
+```
+broker.consumer.uris.broker1=tcp://localhost:61616
+broker.consumer.userNames.broker1=admin
+broker.consumer.passwords.broker1=admin
+broker.consumer.queueNames.broker1=testQueueInbound1
+
+broker.consumer.uris.broker2=tcp://example.org:61616
+broker.consumer.userNames.broker2=admin
+broker.consumer.passwords.broker2=admin
+broker.consumer.queueNames.broker2=testQueueInbound2
+```
+
+This way messages coming in from all configured brokers and queues will be processed.
+
+The above gives possibility not to only subscribe to multiple brokers, but also multiple queues within the same broker if we define two different brokers with the same url:
+
+```
+broker.consumer.uris.orderBroker=tcp://localhost:61616
+broker.consumer.userNames.orderBroker=admin
+broker.consumer.passwords.orderBroker=admin
+broker.consumer.queueNames.orderBroker=MyQueue
+
+broker.consumer.uris.orderBroker=tcp://example.org:61616
+broker.consumer.userNames.orderBroker=admin
+broker.consumer.passwords.orderBroker=admin
+broker.consumer.queueNames.orderBroker=OtherQueue
+
+```
+
+IMPORTANT: it is important that for each configured broker all 4 (uris, userNames, passwords, queueNames) properties are defined. If any of the defined brokers
+are missing one of the properties, the application will throw a `MissingPropertyException`. The only time these config properties will be ignored is when `activemq.connections.enabled` is set to false.
+
+Note: the reason the property names above (uris, userNames, passwords, queueNames) are defined in plural is that at runtime they are aggregated to maps of brokerName->value,
+and the values of these maps are often treated as a collection.
+
+
+##### Schema validation
+
+In addition, there is the possibility to register json schema files for specific queues, this is done under `queue.schema.files.names.{QUEUE_NAME}` property, it
+should be a file name that will be mapped to the given queue name and all incoming message contents will be evaluated against this schema. The property should only
+contain the file name, the directory of the file should be provided by the `schema.file.directory` property.
+
+If a message content in a queue fails to validate against the configured schema, a `DetailedValidationException` will be thrown.
+
+#### Consumers
+
+To be able to put messages into a queue, a provide config needs to be given.
+
+A sample provider config:
+
+```
+broker.producer.uris.orderBroker=tcp://activemq:61616
+broker.producer.userNames.orderBroker=admin
+broker.producer.passwords.orderBroker=admin
+broker.producer.queueNames.orderBroker=testQueueOutbound
+```
+
+The producer config gives the same flexibility as consumer config, e.g. we can define multiple brokers, multiple queues within brokers like in the consumer examples above.
+
+IMPORTANT: just like with consumers, producer config requires you to declare all four properties for every broker config block (like above).
+
+##### Triggering message producers
+
+In order to get the application to put a message to a configured queue we need to call the queues REST endpoint.
+
+An example request to trigger:
+
+```
+curl -X POST \
+  'http://localhost:3001/test-rest/queues?brokerName=orderBroker' \
+  -H 'Content-Type: application/json' \
+  -d '{ "firstName" : "Peter" , "lastName" : "Griffin"}'
+
+```
+
+Will result in a message with content `{ "firstName" : "Peter" , "lastName" : "Griffin"}` being sent to the whatever queue was configured for
+`orderBroker` broker.
+
+Note: The queues endpoint will not show up on swagger docs if the `activemq.connections.enabled` is set to false - the creation of this bean is conditional
+on the `activemq.connections.enabled` property being true. 
+
+# Swagger Docs
 
 The above endpoints are described using swagger and can be accessed on `http://localhost:23240/swagger-ui.html`
 
