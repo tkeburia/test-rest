@@ -193,10 +193,10 @@ broker.consumer.userNames.orderBroker=admin
 broker.consumer.passwords.orderBroker=admin
 broker.consumer.queueNames.orderBroker=MyQueue
 
-broker.consumer.uris.orderBroker=tcp://example.org:61616
-broker.consumer.userNames.orderBroker=admin
-broker.consumer.passwords.orderBroker=admin
-broker.consumer.queueNames.orderBroker=OtherQueue
+broker.consumer.uris.otherBroker=tcp://localhost:61616
+broker.consumer.userNames.otherBroker=admin
+broker.consumer.passwords.otherBroker=admin
+broker.consumer.queueNames.otherBroker=OtherQueue
 
 ```
 
