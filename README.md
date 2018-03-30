@@ -210,14 +210,14 @@ and the values of these maps are often treated as a collection.
 ##### Schema validation
 
 In addition, there is the possibility to register json schema files for specific queues, this is done under `queue.schema.files.names.{QUEUE_NAME}` property, it
-should be a file name that will be mapped to the given queue name and all incoming message contents will be evaluated against this schema. The property should only
+should be a file name that will be mapped to the given queue name and all incoming message contents in this queue will be evaluated against the schema. The property should only
 contain the file name, the directory of the file should be provided by the `schema.file.directory` property.
 
 If a message content in a queue fails to validate against the configured schema, a `DetailedValidationException` will be thrown.
 
 #### Consumers
 
-To be able to put messages into a queue, a provide config needs to be given.
+To be able to put messages into a queue, a provider config needs to be given.
 
 A sample provider config:
 
