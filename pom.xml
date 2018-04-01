@@ -166,6 +166,14 @@
             <version>3.5</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>uk.org.lidalia</groupId>
+            <artifactId>slf4j-test</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -186,6 +194,7 @@
                 <configuration>
                     <classpathDependencyExcludes>
                         <classpathDependencyExclude>com.vaadin.external.google:android-json</classpathDependencyExclude>
+                        <classpathDependencyExcludes>ch.qos.logback:logback-classic</classpathDependencyExcludes>
                     </classpathDependencyExcludes>
                 </configuration>
             </plugin>
@@ -219,7 +228,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.70</minimum>
+                                            <minimum>0.85</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

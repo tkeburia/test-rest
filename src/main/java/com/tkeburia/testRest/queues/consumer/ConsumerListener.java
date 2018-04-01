@@ -37,7 +37,7 @@ public class ConsumerListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         if (!(message instanceof ActiveMQTextMessage)) {
-            LOG.warn("Expected message of class ActiveMQTextMessage but got {}", message.getClass().getName());
+            LOG.warn(String.format("Expected message of class ActiveMQTextMessage but got %s", message.getClass().getName()));
             return;
         }
         ActiveMQTextMessage messageToUse = (ActiveMQTextMessage) message;

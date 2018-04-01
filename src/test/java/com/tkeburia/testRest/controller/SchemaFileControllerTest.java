@@ -1,13 +1,16 @@
 package com.tkeburia.testRest.controller;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -19,18 +22,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(SchemaFileController.class)
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations = "classpath:test.properties")
 public class SchemaFileControllerTest {
 
     private static final String FILE_NAME = "test_schema.json";
     private static final String FILE_NAME2 = "test_schema2.json";
 
-    @Autowired
-    MockMvc testServer;
+    private MockMvc testServer;
 
     @Value("${schema.file.directory}")
     private String schemaDir;
+
+    @Before
+    public void setup() {
+        testServer = MockMvcBuilders.standaloneSetup(new SchemaFileController(schemaDir)).build();
+    }
 
     @After
     public void cleanup() {

@@ -1,5 +1,7 @@
 package com.tkeburia.testRest.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tkeburia.testRest.App;
 import com.tkeburia.testRest.exception.DetailedValidationException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -12,10 +14,25 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
+import org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
+import org.springframework.boot.autoconfigure.hateoas.HypermediaAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration;
+import org.springframework.boot.autoconfigure.mustache.MustacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.util.NestedServletException;
 
 import java.io.File;
@@ -30,9 +47,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(MainController.class)
+
 @RunWith(SpringRunner.class)
-@TestPropertySource(properties = "schema.file.directory=./src/test/resources")
+@TestPropertySource(properties = "schema.file.directory=./src/test/resources", locations = "classpath:test.properties")
 public class MainControllerTest {
 
     private static final String FILE_NAME = "test_file.json";
@@ -40,14 +57,20 @@ public class MainControllerTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    @Autowired
-    MockMvc testServer;
+    @Value("${sample.response.directory}")
+    private String responseDirectory;
+
+    @Value("${schema.file.directory}")
+    private String schemaDirectory;
+
+    private MockMvc testServer;
 
     @Value("${sample.response.directory}")
     private String responseDir;
 
     @Before
     public void setup() throws IOException {
+        testServer = MockMvcBuilders.standaloneSetup(new MainController(responseDirectory, schemaDirectory, new ObjectMapper())).build();
         final File dir = new File(responseDir);
         if (!dir.exists()) dir.mkdir();
         writeStringToFile(new File(dir, FILE_NAME), "{ \"response\" : \"as_expected\" }", UTF_8);

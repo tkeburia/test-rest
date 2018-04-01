@@ -33,15 +33,16 @@ public final class HttpUtils {
 
     public static HttpRequestAndOtherArgs separateHttpRequestArgsFromOthers(JoinPoint point) {
         final HttpRequestAndOtherArgs result = new HttpRequestAndOtherArgs();
-        result.setOtherArgs(stream(point.getArgs())
+        final Object[] args = point.getArgs();
+        result.setOtherArgs(stream(args)
                 .filter(arg -> !(arg instanceof HttpServletRequest))
                 .collect(Collectors.toList()));
 
-        result.setHttpServletRequest(stream(point.getArgs())
+        result.setHttpServletRequest(stream(args)
                 .filter(HttpServletRequest.class::isInstance)
                 .map(arg -> (HttpServletRequest) arg)
                 .findFirst()
-                .orElse(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()));
+                .orElseGet(() -> ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()));
         return result;
 
     }

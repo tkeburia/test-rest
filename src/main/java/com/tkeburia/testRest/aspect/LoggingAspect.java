@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.tkeburia.testRest.dto.HttpRequestAndOtherArgs;
-import org.apache.activemq.command.ActiveMQMapMessage;
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,8 +18,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.tkeburia.testRest.util.HttpUtils.getHeaderMap;
 import static com.tkeburia.testRest.util.HttpUtils.separateHttpRequestArgsFromOthers;
@@ -35,21 +30,19 @@ public class LoggingAspect
     private static final Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
 
     private final ObjectMapper objectMapper;
-
-    @Value("#{'${suppressed.headers}'.split(',')}")
-    private List<String> exceptHeaders;
+    private final List<String> exceptHeaders;
 
     @Autowired
-    public LoggingAspect(ObjectMapper objectMapper)
-    {
+    public LoggingAspect(ObjectMapper objectMapper, @Value("#{'${suppressed.headers}'.split(',')}") List<String> exceptHeaders) {
         this.objectMapper = objectMapper;
+        this.exceptHeaders = exceptHeaders;
     }
 
     @AfterReturning(
             pointcut = "@annotation(org.springframework.web.bind.annotation.RequestMapping)",
             returning = "result"
     )
-    public void logAfterReturning(JoinPoint point, Object result) throws JsonProcessingException
+    public void logControllerMethod(JoinPoint point, Object result) throws JsonProcessingException
     {
         final HttpRequestAndOtherArgs groupedArgs = separateHttpRequestArgsFromOthers(point);
 
@@ -71,7 +64,7 @@ public class LoggingAspect
     )
     public void logMethodData(Message message) throws JMSException, JsonProcessingException {
         LOG.info(String.format("Received message on queue %s", message.getJMSDestination().toString()));
-        LOG.info("Queue Message content : {}", message.toString());
+        LOG.info(String.format("Queue Message content : %s", message.toString()));
     }
 
 }
