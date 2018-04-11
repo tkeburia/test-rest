@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tkeburia/test-rest.svg?branch=master)](https://travis-ci.org/tkeburia/test-rest)
 # test-rest
 A simple rest application that can return different responses based on request parameters
 
