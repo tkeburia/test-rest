@@ -215,30 +215,7 @@
                     <tag>${project.version}</tag>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.3.6</version>
-                <configuration>
-                    <repository>${docker.image.prefix}/${docker.image.name}</repository>
-                    <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                        <CONFIG_LOCATION>/opt/test-rest/config/</CONFIG_LOCATION>
-                    </buildArgs>
-                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-                    <tag>latest</tag>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
@@ -246,6 +223,43 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker-build-push</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>dockerfile-maven-plugin</artifactId>
+                        <version>1.3.6</version>
+                        <configuration>
+                            <repository>${docker.image.prefix}/${docker.image.name}</repository>
+                            <buildArgs>
+                                <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                                <CONFIG_LOCATION>/opt/test-rest/config/</CONFIG_LOCATION>
+                            </buildArgs>
+                            <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                            <tag>latest</tag>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>dockerfile</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <developers>
             <developer>
