@@ -6,7 +6,7 @@ A simple rest application that can return different responses based on request p
 This is a spring boot application that can be started by running mvn spring-boot:run
 
 # Run as a jar
-The application can be built with maven (`mvn clean install`) and the resulting jar can be run directly: `java -jar testRest-1.0-SNAPSHOT.jar`
+The application can be built with maven (`mvn clean install`) and the resulting jar can be run directly: `java -jar test-rest-1.0-SNAPSHOT.jar`
 
 # Calling the endpoints
 
@@ -18,7 +18,7 @@ If a specific response code is necessary it can be supplied as a parameter:
 
 Request
 
-`curl -X GET   'http://localhost:23240/testRest?giveMe=400' -i`
+`curl -X GET   'http://localhost:23240/test-rest?giveMe=400' -i`
 
 Response
 ```
@@ -265,7 +265,7 @@ Request
 
 ```
       curl -X POST \
-      'http://localhost:23240/testRest?giveMe=201' \
+      'http://localhost:23240/test-rest?giveMe=201' \
       -H 'authorization: Basic dXNlcjpwd2Q=' \
       -H 'content-type: application/json' \
       -d '{
