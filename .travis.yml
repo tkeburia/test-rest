@@ -1,5 +1,7 @@
 before_install: "git clone `git config --get remote.origin.url` test-rest"
 install: "mvn clean install --settings test-rest/settings.xml"
+after_success:
+    - "mvn jacoco:report coveralls:report"
 language: java
 jdk: oraclejdk8
 services:
