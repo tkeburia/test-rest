@@ -92,7 +92,8 @@ public class SchemaFileControllerTest {
 
         testServer.perform(get("/test-rest/schemaFile"))
                   .andExpect(status().isOk())
-                  .andExpect(content().string("{\"files\":[\"" + schemaDir + FILE_NAME + "\",\"" + schemaDir + FILE_NAME2 + "\"]}"));
+                  .andExpect(content().json("{\"files\":[\"" + schemaDir + FILE_NAME +
+                          "\",\"" + schemaDir + FILE_NAME2 + "\"]}", false));
     }
 
 }

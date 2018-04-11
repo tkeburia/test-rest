@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.File;
@@ -92,7 +93,8 @@ public class ResponseFileControllerTest {
 
         testServer.perform(get("/test-rest/responseFile"))
                   .andExpect(status().isOk())
-                    .andExpect(content().string("{\"files\":[\"" + responseDir + FILE_NAME + "\",\"" + responseDir + FILE_NAME2 + "\"]}"));
+                  .andExpect(content().json("{\"files\":[\"" + responseDir + FILE_NAME +
+                          "\",\"" + responseDir + FILE_NAME2 + "\"]}", false));
     }
 
 }
