@@ -28,13 +28,13 @@ Response
  Connection: close
 ```
 
-### `/testRest` POST endpoint
+### `/test-rest` POST endpoint
 if called without any query parameters will return a 200. It will also return a json with
 the description of the http status in the body:
 
 Request
 
-`curl -X POST   'http://localhost:23240/testRest?giveMe=409'   -H 'content-type: application/json'   -d '{}' -i`
+`curl -X POST   'http://localhost:23240/test-rest?giveMe=409'   -H 'content-type: application/json'   -d '{}' -i`
 
 Response
 
@@ -54,7 +54,7 @@ This is going to be the name of a file that is managed by the application, the c
 Request
 
 `curl -X GET \
-   'http://localhost:23240/testRest?responseFile=new_file1.json' \
+   'http://localhost:23240/test-rest?responseFile=new_file1.json' \
    -H 'Content-Type: application/json -i'
 `
 
@@ -96,7 +96,7 @@ The following api call can be used to create new sample response files:
 
 ```
 curl -X POST \
-     'http://localhost:23240/testRest/responseFile?fileName=new_file2.json' \
+     'http://localhost:23240/test-rest/responseFile?fileName=new_file2.json' \
      -H 'Content-Type: application/json' \
      -d '{
        "glossary": {
@@ -131,7 +131,7 @@ The following lists all currently existing sample response files that can be use
 
 Request:
 
-`curl -X GET http://localhost:23240/testRest/responseFile -H 'Content-Type: application/json'`
+`curl -X GET http://localhost:23240/test-rest/responseFile -H 'Content-Type: application/json'`
 
 Response:
 
