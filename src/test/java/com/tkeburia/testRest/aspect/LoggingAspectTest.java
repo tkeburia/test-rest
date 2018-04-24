@@ -3,6 +3,8 @@ package com.tkeburia.testRest.aspect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.util.ByteSequence;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.junit.Before;
@@ -64,7 +66,7 @@ public class LoggingAspectTest {
     private HttpServletRequest request;
 
     @Mock
-    private Message message;
+    private ActiveMQMessage message;
 
     @Mock
     private Destination destination;
@@ -105,7 +107,8 @@ public class LoggingAspectTest {
         TLOG.setEnabledLevels(INFO);
         when(message.getJMSDestination()).thenReturn(destination);
         when(destination.toString()).thenReturn(DESTINATION);
-        when(message.toString()).thenReturn(MESSAGE_CONTENT);
+        when(message.getContent()).thenReturn(new ByteSequence(new byte[] {0, 0, 0, 4, 116, 101, 115, 116}));
+        when(message.toString(ImmutableMap.of("text", "test"))).thenReturn(MESSAGE_CONTENT);
 
         loggingAspect.logMethodData(message);
 

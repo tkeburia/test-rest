@@ -57,6 +57,18 @@ public class ConsumerConfig {
         return new HashMap<>();
     }
 
+    @Bean
+    @ConfigurationProperties(prefix = "queue.response.script.names")
+    public Map<String, String> queueResponseScriptMappings() {
+        return new HashMap<>();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "queue.response.brokers")
+    public Map<String, String> queueResponseDestinationMappings() {
+        return new HashMap<>();
+    }
+
     private MessageConsumer createConsumer(String brokerName) throws JMSException {
         final Session consumerSession = consumerConnectionMap().get(brokerName).createSession(false, AUTO_ACKNOWLEDGE);
         final Destination consumerDestination = consumerSession.createQueue(consumerProperties.getQueueNames().get(brokerName));
