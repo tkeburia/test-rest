@@ -38,11 +38,14 @@ public class ConsumerListenerTest {
     @Mock
     private Message nonMqMessage;
 
+    @Mock
+    ConsumerResponseService consumerResponseService;
+
     private ConsumerListener consumerListener;
 
     @Before
     public void setup() throws MessageNotWriteableException {
-        consumerListener = new ConsumerListener("./src/test/resources", ImmutableMap.of("queue1", "schema.json"));
+        consumerListener = new ConsumerListener("./src/test/resources", ImmutableMap.of("queue1", "schema.json"), consumerResponseService);
         when(message.getDestination()).thenReturn(new ActiveMQQueue("queue1"));
         TLOG.clearAll();
     }
@@ -83,10 +86,10 @@ public class ConsumerListenerTest {
     public void shouldLogIOException() throws JMSException {
         TLOG.setEnabledLevels(ERROR);
         // invalid file name will cause an IOException that we need for the test
-        consumerListener = new ConsumerListener("./src/test/resources", ImmutableMap.of("queue1", "\0"));
+        consumerListener = new ConsumerListener("./src/test/resources", ImmutableMap.of("queue1", "\0"), consumerResponseService);
         when(message.getText()).thenReturn("{\"firstName\" : \"Peter\", \"surName\" : \"Griffin\"}");
         consumerListener.onMessage(message);
         assertEquals(1, TLOG.getAllLoggingEvents().size());
-        assertTrue(TLOG.getAllLoggingEvents().get(0).getMessage().contains("Error matching the configured schema!"));
+        assertTrue(TLOG.getAllLoggingEvents().get(0).getMessage().contains("Error processing message:"));
     }
 }
