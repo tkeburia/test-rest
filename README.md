@@ -216,7 +216,40 @@ contain the file name, the directory of the file should be provided by the `sche
 
 If a message content in a queue fails to validate against the configured schema, a `DetailedValidationException` will be thrown.
 
-#### Consumers
+#### Generating responses
+
+We can automatically generate responses for messages read from a queue and put them on a configured queue (could be the same as where original message came from or a different response queue).
+This is helpful to imitate a system that might read messages from a queue and react to them by putting new messages on a queue.
+
+To generate a response, we will need to provide a groovy script that creates the response message payload. The groovy script will have access to the original message payload that was read. It can be accessed with
+`inputMessage` variable.
+
+The location of script files is configured by the `response.script.directory` property.
+
+We can configure a response generating script per queue using the `queue.response.script.names.{QUEUE_NAME}` property. for example:
+```
+queue.response.script.names.testQueueInbound=script1.groovy
+```
+This will invoke the script1.groovy on any message payload that comes through the testQueueInbound queue.
+
+we also need to configure where will the response be sent to using `queue.response.brokers.{QUEUE_NAME}` property:
+
+```
+queue.response.brokers.testQueueInbound=customerResponseBroker
+```
+This will make sure all generated responses for `testQueueInbound` queue are handed to the `customerResponseBroker` broker. We also need to configure the `customerResponseBroker` just like other brokers:
+
+```
+broker.producer.uris.customerResponseBroker=tcp://localhost:61616
+broker.producer.userNames.customerResponseBroker=admin
+broker.producer.passwords.customerResponseBroker=admin
+broker.producer.queueNames.customerResponseBroker=responseQueue
+```
+The broker above could either handle the same queue as where we read the original message from or any other queue.
+
+The code for generating responses is not invoked it `activemq.connections.enabled` is set to false. In fact the necessary beans to execute it will not even be generated unless `activemq.connections.enabled` is set to true.
+
+#### Producers
 
 To be able to put messages into a queue, a provider config needs to be given.
 
