@@ -61,7 +61,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>5.0.0.RC4</version>
         </dependency>
 
         <dependency>
@@ -86,7 +85,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
-            <version>5.0.0.RELEASE</version>
         </dependency>
 
         <dependency>
