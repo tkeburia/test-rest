@@ -6,6 +6,9 @@ language: java
 jdk: oraclejdk8
 services:
   - docker
+cache:
+  directories:
+  - $HOME/.m2
 env:
   global:
     - secure: "Q36KgQIfHDJkvlW3DGx2RmxfG1OzKcAwhRCj2adn3Yr5Afvzwhr3otKEvTJk/vFtrEicMHEFSrrdK5yswEDmgiitZf4Jv0+zxTDy8SzA56GQD0K3XoZgc559K/WCvKZZ1VV9AWpzQzPbvnmf9VX+4OY26eov3aGLNrNXQrY+GPaMEBJY1HjdTbEsu32ZPhiCtZ2gsE9Jqiba4VJAGqXHMBYmt1aLFOAEfsp0pt+rdCkEDeRPLZ+61pWBC0m4r1v7Lvl+1uE8QzkRteO7lgVgdCtPCZRhNUmrX8vI4Bv2rhZipowwSnE2vNRypPNb1ofp8EeesHtbdcLbB6eNVYMrswHm08VXqS9SWK9JPjBXu8NPoDVa3vuVtyg1ZUN3ikMtW/hXbBdm13LYFxPet8yv4P8voA5Cr5NYjpMlzr+tOkjPcxAw8a9J2lcOiD0J8J0F85IRCnO+kZwKHQg0NRNVoLlmPfgFvyLVd5XrjbthaKoQeyN7luR7HlRHZz6k+Vjte+rAu55Gh/YYWIw+MZX5rW6yyRcPBVGsnsETrpUJi7XH4sAjYPkwQ0y4W8OA7qltnV/3OaxjzRAO5GrEQF4/thWRXZJabLHMJNLImGhRIcBIGP7iPL0uMQDUBCx+h+saWCmYP2cN/VcF9cluVN47GMdUsSwXUy1HUWD0EvJy4Nc="
