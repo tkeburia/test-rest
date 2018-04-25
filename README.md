@@ -9,6 +9,39 @@ This is a spring boot application that can be started by running mvn spring-boot
 # Run as a jar
 The application can be built with maven (`mvn clean install`) and the resulting jar can be run directly: `java -jar test-rest-1.0-SNAPSHOT.jar`
 
+# Run in Docker
+There is a pre-built docker image on docker hub which you can use:
+```
+docker run -d -p 23240:23240 tkeburia/test-rest
+```
+
+if you want to override the default configuration (e.g. enable ActiveMQ integration) or provide script/response/schema files, the easiest way is to use docker-compose
+a sample docker compose config like this can be used:
+```
+version: "3"
+
+services:
+  engage-mock:
+    image: tkeburia/test-rest
+    container_name: engage-mock
+    hostname: engage-mock-container
+    volumes:
+      - ./config:/opt/test-rest/config
+      - ./schema:/opt/test-rest/schemas
+      - ./responses:/opt/test-rest/sample_responses
+    ports:
+      - "23240:23240"
+    network_mode: "bridge"
+    restart: on-failure
+    external_links:
+      - "activemq"
+
+```
+
+
+this maps `./config`, `./schema` and `./responses` directories as volumes on the container. `/opt/test-rest/config` is the default override location for application.properties so mounting your application.properties file there will automatically be picked up.
+This also assumes that ActiveMQ is running in another container with name `activemq`. If you use the above config, make sure to use `activemq` as the hostname instead of `localhost` from within the `test-rest` container
+
 # Calling the endpoints
 
 the main endpoints are
