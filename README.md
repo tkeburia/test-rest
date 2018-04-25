@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/tkeburia/test-rest.svg?branch=master)](https://travis-ci.org/tkeburia/test-rest)  [![Coverage Status](https://coveralls.io/repos/github/tkeburia/test-rest/badge.svg?branch=master)](https://coveralls.io/github/tkeburia/test-rest?branch=master)
+[![Build Status](https://travis-ci.org/tkeburia/test-rest.svg?branch=master)](https://travis-ci.org/tkeburia/test-rest)  [![Coverage Status](https://coveralls.io/repos/github/tkeburia/test-rest/badge.svg?branch=master)](https://coveralls.io/github/tkeburia/test-rest?branch=master)  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # test-rest
 A simple rest application that can return different responses based on request parameters
 
